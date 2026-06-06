@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>SubStack | SaaS Subscription Management</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/tabler-icons.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="shell">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><i class="ti ti-bolt" style="color:white; font-size:18px"></i></div>
+      <div><div class="brand-name">SubStack</div><div class="brand-sub">v2.0 · Stripe</div></div>
+    </div>
+    <div class="nav-grp">Platform</div>
+    <div class="nav-link on" data-page="dash"><i class="ti ti-layout-dashboard"></i><span>Overview</span></div>
+    <div class="nav-link" data-page="plans"><i class="ti ti-stack-2"></i><span>Plans & Pricing</span></div>
+    <div class="nav-link" data-page="subs"><i class="ti ti-users"></i><span>Subscriptions</span><span class="pill">1.2k</span></div>
+    <div class="nav-grp">Billing</div>
+    <div class="nav-link" data-page="invoices"><i class="ti ti-file-invoice"></i><span>Invoices</span></div>
+    <div class="nav-link" data-page="usage"><i class="ti ti-chart-dots-3"></i><span>Usage Analytics</span></div>
+    <div class="nav-grp">Admin</div>
+    <div class="nav-link" data-page="admin"><i class="ti ti-shield-lock"></i><span>Admin Panel</span></div>
+    <div class="nav-link" data-page="webhook"><i class="ti ti-plug-connected"></i><span>Webhooks</span></div>
+    <div class="usr-card" style="margin-top: auto;">
+      <div style="width:32px;height:32px;background:var(--violet-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--violet);font-weight:bold">AP</div>
+      <div><div style="font-weight:500">Arjun Patel</div><div style="font-size:10px;color:var(--color-text-tertiary)">Super Admin</div></div>
+    </div>
+  </aside>
+  <div id="main">
+    <div id="topbar">
+      <span class="tb-title" style="font-weight:600" id="tb-title">Overview</span>
+      <div style="display:flex; gap:12px; margin-left:auto; align-items:center">
+        <div style="display:flex; align-items:center; gap:6px; background:var(--color-background-secondary); border-radius:30px; padding:5px 12px">
+          <i class="ti ti-search" style="font-size:13px"></i>
+          <input type="text" placeholder="Search subscriptions…" id="globalSearch" style="background:transparent; border:none; outline:none; font-size:12px; color:var(--color-text-primary); width:150px">
+        </div>
+        <span class="badge badge-v"><i class="ti ti-brand-stripe"></i> Stripe live</span>
+        <button class="btn btn-violet" id="main-cta"><i class="ti ti-plus"></i><span id="cta-txt">New Subscription</span></button>
+      </div>
+    </div>
+    <div id="content">
+      <!-- DASHBOARD -->
+      <div id="page-dash" class="page on">
+        <div class="kpi-row">
+          <div class="kpi v"><div class="kpi-lbl" style="font-size:11px; color:var(--color-text-tertiary)">MRR</div><div class="kpi-val" style="color:var(--violet)">$84.2K</div><div class="kpi-chg up" style="color:var(--emerald)"><i class="ti ti-trending-up"></i> +12.4%</div></div>
+          <div class="kpi e"><div class="kpi-lbl">Active subs</div><div class="kpi-val" style="color:var(--emerald)">1,248</div><div class="kpi-chg up">+38 this week</div></div>
+          <div class="kpi a"><div class="kpi-lbl">Churn rate</div><div class="kpi-val" style="color:var(--amber)">2.3%</div><div class="kpi-chg up"><i class="ti ti-trending-down"></i> -0.4%</div></div>
+          <div class="kpi s"><div class="kpi-lbl">ARPU</div><div class="kpi-val" style="color:var(--sky)">$67.50</div><div class="kpi-chg neu">Stable</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card"><div class="card-hdr" style="display:flex; justify-content:space-between; margin-bottom:12px"><span>MRR growth 2025</span><span class="badge badge-e">+$9.3K vs Jan</span></div><canvas id="mrrChart" height="150"></canvas></div>
+          <div class="card"><div class="card-hdr"><span>Subscribers by plan</span><span class="badge badge-g">1,248 total</span></div><div style="display:flex; gap:12px; align-items:center"><canvas id="planDonut" width="90" height="90" style="width:90px;height:90px"></canvas><div><div><span style="display:inline-block;width:10px;height:10px;background:#94A3B8;border-radius:2px"></span> Starter 648 (52%)</div><div><span style="background:#7C3AED"></span> Pro 412 (33%)</div><div><span style="background:#059669"></span> Enterprise 188 (15%)</div></div></div></div>
+        </div>
+        <div class="two-col">
+          <div class="card"><div class="card-hdr"><span>Recent events</span></div><div id="events-list"></div></div>
+          <div class="card"><div class="card-hdr"><span>Revenue by plan (Jun)</span></div><canvas id="revBar" height="130"></canvas></div>
+        </div>
+      </div>
+      <!-- PLANS page -->
+      <div id="page-plans" class="page">
+        <div class="toggle-row" style="display:flex; gap:16px; margin-bottom:20px">
+          <span>Billing cycle:</span>
+          <div class="toggle-group" style="display:flex; gap:8px">
+            <button class="btn btn-outline btn-sm toggle-month active">Monthly</button>
+            <button class="btn btn-outline btn-sm toggle-year">Annual <span style="color:var(--emerald)">-20%</span></button>
+          </div>
+        </div>
+        <div id="plan-grid" class="plan-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px"></div>
+        <div class="card">
+          <div class="card-hdr"><span>Plan management (Stripe sync)</span></div>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Plan</th><th>Stripe Price ID</th><th>Subscribers</th><th>MRR</th><th>Conversion</th><th>Status</th></tr></thead>
+              <tbody id="plan-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- SUBSCRIPTIONS -->
+      <div id="page-subs" class="page">
+        <div style="display:flex; gap:12px; margin-bottom:16px">
+          <select id="planFilter" class="filter-select" style="padding:6px 12px;border-radius:10px;background:var(--color-background-primary)">
+            <option value="all">All plans</option>
+            <option value="starter">Starter</option>
+            <option value="pro">Pro</option>
+            <option value="enterprise">Enterprise</option>
+          </select>
+          <select id="statusFilter" style="padding:6px 12px;border-radius:10px;background:var(--color-background-primary)">
+            <option value="all">All statuses</option>
+            <option value="active">Active</option>
+            <option value="trialing">Trialing</option>
+            <option value="past_due">Past due</option>
+            <option value="canceled">Canceled</option>
+          </select>
+          <span id="sub-count" style="margin-left:auto">Showing 8</span>
+        </div>
+        <div class="t-wrap">
+          <table>
+            <thead><tr><th>Customer</th><th>Plan</th><th>Status</th><th>MRR</th><th>Billing</th><th>Next charge</th><th></th></tr></thead>
+            <tbody id="subs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- INVOICES -->
+      <div id="page-invoices" class="page">
+        <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi e"><div class="kpi-lbl">Collected MTD</div><div class="kpi-val">$81.4K</div><div>96.7% collection</div></div>
+          <div class="kpi a"><div class="kpi-lbl">Overdue</div><div class="kpi-val">$2.8K</div><div>14 invoices</div></div>
+          <div class="kpi s"><div class="kpi-lbl">Upcoming (7d)</div><div class="kpi-val">$28.3K</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-hdr"><span>Recent invoices</span><button class="btn btn-outline btn-sm">Export CSV</button></div>
+            <div id="inv-list"></div>
+          </div>
+          <div class="card"><canvas id="collectionChart" height="150"></canvas></div>
+        </div>
+      </div>
+      <!-- USAGE -->
+      <div id="page-usage" class="page">
+        <div class="kpi-row">
+          <div class="kpi v"><div class="kpi-lbl">API calls MTD</div><div class="kpi-val">14.8M</div><div>+22%</div></div>
+          <div class="kpi e"><div class="kpi-lbl">Active users</div><div class="kpi-val">8,340</div><div>68% seat usage</div></div>
+          <div class="kpi a"><div class="kpi-lbl">Storage used</div><div class="kpi-val">3.2 TB</div><div>64%</div></div>
+          <div class="kpi s"><div class="kpi-lbl">P95 latency</div><div class="kpi-val">82ms</div><div>-11ms</div></div>
+        </div>
+        <div class="card"><canvas id="usageChart" height="140"></canvas></div>
+        <div class="card" style="margin-top:16px">
+          <div class="card-hdr"><span>Top consumers</span></div>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>Customer</th><th>Plan</th><th>API calls</th><th>Usage %</th><th>Storage</th><th>Overage</th></tr></thead>
+              <tbody id="usage-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- ADMIN -->
+      <div id="page-admin" class="page">
+        <div class="role-grid" id="role-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px"></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-hdr"><span>Team members</span><button class="btn btn-violet btn-sm">Invite</button></div>
+            <div class="t-wrap">
+              <table>
+                <thead><tr><th>Member</th><th>Role</th><th>MFA</th><th>Last login</th><th>Status</th></tr></thead>
+                <tbody id="team-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hdr"><span>Audit log</span></div>
+            <div id="audit-list"></div>
+          </div>
+        </div>
+      </div>
+      <!-- WEBHOOKS -->
+      <div id="page-webhook" class="page">
+        <div class="card">
+          <div class="card-hdr"><span>Stripe webhook endpoints</span><button class="btn btn-violet btn-sm">Add endpoint</button></div>
+          <div class="t-wrap">
+            <table>
+              <thead><tr><th>URL</th><th>Events</th><th>Last delivery</th><th>Success rate</th><th>Status</th></tr></thead>
+              <tbody id="webhook-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><span>Subscribed events (12 active)</span></div>
+          <div id="events-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
