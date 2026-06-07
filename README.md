@@ -1,5 +1,5 @@
 # project-1
-. SaaS Subscription Management Platform
+ SaaS Subscription Management Platform
 
 Objective:
 Build a scalable platform to manage SaaS subscriptions, plans, and billing.
