@@ -1,6 +1,6 @@
 # project-1
  SaaS Subscription Management Platform
- SaaS subscription management platform automates the entire financial and customer lifecycle of recurring software services
+ SaaS subscription management platform automates the entire financial and customer lifecycle of recurring software services or
 
 Objective:
 Build a scalable platform to manage SaaS subscriptions, plans, and billing.
