@@ -1,6 +1,6 @@
-// ========================
+// ==================
 // DATA MODELS
-// ========================
+// ==================
 
 const subsData = [
   { name: 'Lena Schmidt', email: 'lena@buildco.io', plan: 'pro', status: 'active', mrr: '$79', billing: 'monthly', next: 'Jul 1' },
